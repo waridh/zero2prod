@@ -1,15 +1,20 @@
-use rand::Rng;
+use std::net::TcpListener;
 
-fn spawn_app(addr: &str) {
-    let server = zero2prod::run(addr).expect("Failed to bind to address");
+fn spawn_app() -> u16 {
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Could not bind application to address");
+    let port = listener
+        .local_addr()
+        .expect("Could not get local application address")
+        .port();
+    let server = zero2prod::run(listener).expect("Failed to bind to address");
     #[allow(clippy::let_underscore_future)]
     let _ = tokio::spawn(server);
+    port
 }
 
 #[tokio::test]
 async fn health_check_works() {
-    let port = rand::thread_rng().gen_range(49152..65536);
-    spawn_app(&format!("127.0.0.1:{}", port));
+    let port = spawn_app();
 
     let client = reqwest::Client::new();
 

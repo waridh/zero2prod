@@ -1,0 +1,5 @@
+#+title: zero2prod
+* Introduction
+This is a learning how to build a Rust backend for a web application. This project is based on the [[https://www.zero2prod.com/index.html?country_code=CA][zero2prod]] rust book by Luca Palmieri.
+* Database Migration
+- The process of database migration when you are changing the schema of a sql database. This is because the table schema is usually immutable, so chaning the schema requires the deletion of the previous table, and the creation of the new one, along with the transfer of data from the previous version to he new version.

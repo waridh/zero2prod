@@ -1,6 +1,6 @@
 use std::net::TcpListener;
 
-fn spawn_app() -> u16 {
+fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Could not bind application to address");
     let port = listener
         .local_addr()
@@ -9,17 +9,17 @@ fn spawn_app() -> u16 {
     let server = zero2prod::run(listener).expect("Failed to bind to address");
     #[allow(clippy::let_underscore_future)]
     let _ = tokio::spawn(server);
-    port
+    format!("127.0.0.1:{}", port)
 }
 
 #[tokio::test]
 async fn health_check_works() {
-    let port = spawn_app();
+    let base_addr = spawn_app();
 
     let client = reqwest::Client::new();
 
     let response = client
-        .get(format!("http://127.0.0.1:{}/health_check", port))
+        .get(format!("http://{}/health_check", base_addr))
         .send()
         .await
         .expect("Failed to execute request");

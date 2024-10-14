@@ -1,4 +1,5 @@
 use std::net::TcpListener;
+use zero2prod::startup::run;
 
 fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Could not bind application to address");
@@ -6,7 +7,7 @@ fn spawn_app() -> String {
         .local_addr()
         .expect("Could not get local application address")
         .port();
-    let server = zero2prod::run(listener).expect("Failed to bind to address");
+    let server = run(listener).expect("Failed to bind to address");
     #[allow(clippy::let_underscore_future)]
     let _ = tokio::spawn(server);
     format!("127.0.0.1:{}", port)
